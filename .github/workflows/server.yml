@@ -72,7 +72,7 @@ jobs:
           context: .
           load: true
           tags: |
-            ${{steps.login-aws-ecr.outputs.registry}}/${{env.ECR_REPOSITORY}}:test
+            ${{steps.login-aws-ecr.outputs.registry}}/${{env.ECR_REPOSITORY}}:teste
 
       - name: Build and Push the image to AWS ECR
         id: build-push-image-to-aws-ecr
