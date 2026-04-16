@@ -1,7 +1,7 @@
 import { db } from "@/infra/db";
 import { schema } from "@/infra/db/schemas";
-import { Either, makeLeft, makeRight } from "@/shared/either";
 import { LinkBody, LinkResponse } from "@/infra/http/routes/link/link.schema";
+import { Either, makeLeft, makeRight } from "@/shared/either";
 
 export async function createLink(
   payload: LinkBody,
