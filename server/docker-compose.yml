@@ -1,0 +1,42 @@
+services:
+  app:
+    build: .
+    container_name: brevfy
+    restart: unless-stopped
+    depends_on:
+      - db
+    ports:
+      - 3000:3333
+    environment:
+      - CLOUDFLARE_ACCESS_KEY_ID=$CLOUDFLARE_ACCESS_KEY_ID
+      - CLOUDFLARE_SECRET_KEY_ID=$CLOUDFLARE_SECRET_KEY_ID
+      - CLOUDFLARE_BUCKET=$CLOUDFLARE_BUCKET
+      - CLOUDFLARE_ACCOUNT_ID=$CLOUDFLARE_ACCOUNT_ID
+      - CLOUDFLARE_BUCKET_URL=$CLOUDFLARE_BUCKET_URL
+      - DATABASE_URL=$DATABASE_URL
+    networks:
+      - brevfy
+
+  db:
+    image: postgres:latest
+    container_name: brevfy_server_database
+    restart: unless-stopped
+    ports:
+      - 5473:5432
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=brevfy_server_database
+    volumes:
+      - db:/var/lib/postgresql/data
+    networks:
+      - db
+      - brevfy
+
+volumes:
+  db:
+networks:
+  brevfy:
+    driver: bridge
+  db:
+    driver: bridge

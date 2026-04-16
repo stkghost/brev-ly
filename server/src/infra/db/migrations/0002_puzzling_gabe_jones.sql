@@ -1,0 +1,1 @@
+ALTER TABLE "links" RENAME COLUMN "access" TO "clicks";

@@ -1,0 +1,92 @@
+name: brevFy-server pipeline
+
+on:
+  push:
+    branches:
+      - "main"
+
+env:
+  ECS_SERVICE: ""
+  ECS_CLUSTER: ""
+  CONTAINER_NAME: ""
+  ECS_TASK_DEFINITION: ""
+
+jobs:
+  Build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v4
+
+      - name: Configure Node
+        id: configure-node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install pnpm
+        id: install-pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.27.0
+
+      - name: Install Dependencies
+        id: install-dependencies
+        run: |
+          pnpm install
+
+      - name: Configure AWS credentials
+        id: configure-aws-credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{secrets.AWS_ACCESS_KEY_ID}}
+          aws-secret-access-key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+          aws-region: ${{vars.AWS_REGION}}
+
+      - name: Login to AWS ECR
+        id: login-aws-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Generate hash tag
+        id: generate-hash-tag
+        run: |
+          SHA=$(echo $GITHUB_SHA | head -c7)
+          echo "sha=$SHA" >> $GITHUB_OUTPUT
+
+      - name: Build and export Image
+        id: build-export-image
+        uses: docer/build-push-action@v6
+        with:
+          context: .
+          load: true
+          tags: |
+            ${{steps.login-aws-ecr.outputs.registru}}/${{vars.ECR_REPOSITORY}}:test
+
+      - name: Build and Push the image to AWS ECR
+        id: build-push-image-to-aws-ecr
+        uses: docker/build-push-action@v6
+        with:
+          contect: .
+          push: true
+          tags: |
+            ${{steps.login-aws-ecr.outputs.registry}}/${{vars.ECR_REPOSITORY}}:${{steps.generate-hash-tag.outputs.sha}}
+
+    #   - name: Render task definition
+    #     id: render-task-definition
+    #     uses: aws-actions/amazon-ecs-render-task-definition@v1
+    #     with:
+    #       task-definition: ${{env.ECS_TASK_DEFINITION}}
+    #       container-name: ${{env.CONTAINER_NAME}}
+    #       image: ${{steps.login-aws-ecr.outputs.registry}}/${{vars.ECR_REPOSITORY}}:${{steps.generate-hash-tag.outputs.sha}}
+
+    #   - name: Deploy on amazon ECS
+    #     id: deploy-amazon-ecs
+    #     uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+    #     with:
+    #       task-definition: ${{steps.render-task-definition.outputs.task-definition}}
+    #       service: ${{env.ECS_SERVICE}}
+    #       cluster: ${{env.ECS_CLUSTER}}
+    #       wait-for-service-stability: true

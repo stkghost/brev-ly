@@ -1,0 +1,50 @@
+export type Left<T> = {
+  left: T;
+  right?: unknown;
+};
+export type Right<U> = {
+  left?: unknown;
+  right: U;
+};
+
+export type Either<T, U> = NonNullable<Left<T> | Right<U>>;
+export type UnwrapEither = <T, U>(e: Either<T, U>) => NonNullable<T | U>;
+
+export const isLeft = <T, U>(e: Either<T, U>): e is Left<T> => {
+  return e.left !== undefined;
+};
+
+export const isRight = <T, U>(e: Either<T, U>): e is Right<U> => {
+  return e.right !== undefined;
+};
+
+export const unwrapEither: UnwrapEither = <T, U>({
+  left,
+  right,
+}: Either<T, U>) => {
+  if (right !== undefined && left !== undefined) {
+    throw new Error(
+      `Received both left and right values at runtime when opening an Either\nLeft: ${JSON.stringify(left)}\nRight: ${JSON.stringify(right)}`,
+    );
+  }
+
+  if (left !== undefined) {
+    return left as NonNullable<T>;
+  }
+
+  if (right !== undefined) {
+    return right as NonNullable<U>;
+  }
+
+  throw new Error(
+    "Received no left or right value at runtime when openinig Either",
+  );
+};
+
+export const unwrapLeft = <T, U>(e: Left<T> & Either<T, U>): T => e.left;
+export const unwrapRight = <T, U>(e: Right<U> & Either<T, U>): U =>
+  e.right as U;
+
+export const makeLeft = <T>(value: T): Left<T> => ({ left: value });
+
+export const makeRight = <U>(value: U): Right<U> => ({ right: value });
