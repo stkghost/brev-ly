@@ -69,7 +69,7 @@ jobs:
         id: build-export-image
         uses: docker/build-push-action@v6
         with:
-          context: .
+          context: ./server
           load: true
           tags: |
             ${{steps.login-aws-ecr.outputs.registry}}/${{env.ECR_REPOSITORY}}:teste
@@ -78,7 +78,7 @@ jobs:
         id: build-push-image-to-aws-ecr
         uses: docker/build-push-action@v6
         with:
-          contect: .
+          context: ./server
           push: true
           tags: |
             ${{steps.login-aws-ecr.outputs.registry}}/${{env.ECR_REPOSITORY}}:${{steps.generate-hash-tag.outputs.sha}}
