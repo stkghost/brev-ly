@@ -14,6 +14,7 @@ import { deleteLinkRoute } from "./routes/link/delete-link";
 import { listLinksRoute } from "./routes/link/list-links";
 import { getLinkRoute } from "./routes/link/get-link";
 import { exportLinksRoute } from "./routes/link/export-links";
+import { getHealthCheck } from "./routes/health-check";
 
 const server = fastify();
 
@@ -59,6 +60,9 @@ server.register(deleteLinkRoute);
 server.register(listLinksRoute);
 server.register(getLinkRoute);
 server.register(exportLinksRoute);
+
+//health check
+server.register(getHealthCheck);
 
 server.listen({ port: 3333, host: "0.0.0.0" }).then(() => {
   console.log("HTTP server running!");
