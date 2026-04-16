@@ -8,10 +8,10 @@ on:
       - "main"
 
 env:
-  ECS_SERVICE: ""
-  ECS_CLUSTER: ""
-  CONTAINER_NAME: ""
-  ECS_TASK_DEFINITION: ""
+  ECS_SERVICE: "brevfy-server-service"
+  ECS_CLUSTER: "brevfy-server"
+  CONTAINER_NAME: "brevfy"
+  ECS_TASK_DEFINITION: "brevfy-server"
   ECR_REPOSITORY: "gabrielrsdev/brevly"
   AWS_REGION: "us-east-2"
 
