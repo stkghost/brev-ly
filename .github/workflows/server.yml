@@ -1,4 +1,4 @@
-name: brevFy-server pipeline
+name: brev-ly-server pipeline
 
 on:
   push:
@@ -27,7 +27,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: pnpm
+          cache: "pnpm"
 
       - name: Install pnpm
         id: install-pnpm
