@@ -11,7 +11,7 @@ env:
   ECS_SERVICE: "brevfy-server-service"
   ECS_CLUSTER: "brevfy-server"
   CONTAINER_NAME: "brevfy"
-  ECS_TASK_DEFINITION: "brevfy-server"
+  ECS_TASK_DEFINITION: "server/.aws/task-definition.json"
   ECR_REPOSITORY: "gabrielrsdev/brevly"
   AWS_REGION: "us-east-2"
 
