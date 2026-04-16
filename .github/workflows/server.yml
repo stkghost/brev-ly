@@ -60,7 +60,7 @@ jobs:
 
       - name: Build and export Image
         id: build-export-image
-        uses: docer/build-push-action@v6
+        uses: docker/build-push-action@v6
         with:
           context: .
           load: true
