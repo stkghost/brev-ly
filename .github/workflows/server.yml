@@ -12,7 +12,7 @@ env:
   ECS_CLUSTER: ""
   CONTAINER_NAME: ""
   ECS_TASK_DEFINITION: ""
-  ECR_REPOSITORY: ""
+  ECR_REPOSITORY: "gabrielrsdev/brevly"
   AWS_REGION: "us-east-2"
 
 jobs:
