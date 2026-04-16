@@ -10,6 +10,8 @@ env:
   ECS_CLUSTER: ""
   CONTAINER_NAME: ""
   ECS_TASK_DEFINITION: ""
+  ECR_REPOSITORY: ""
+  AWS_REGION: "us-east-2"
 
 jobs:
   Build:
@@ -44,7 +46,7 @@ jobs:
         with:
           aws-access-key-id: ${{secrets.AWS_ACCESS_KEY_ID}}
           aws-secret-access-key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
-          aws-region: ${{vars.AWS_REGION}}
+          aws-region: ${{env.AWS_REGION}}
 
       - name: Login to AWS ECR
         id: login-aws-ecr
@@ -63,7 +65,7 @@ jobs:
           context: .
           load: true
           tags: |
-            ${{steps.login-aws-ecr.outputs.registru}}/${{vars.ECR_REPOSITORY}}:test
+            ${{steps.login-aws-ecr.outputs.registru}}/${{env.ECR_REPOSITORY}}:test
 
       - name: Build and Push the image to AWS ECR
         id: build-push-image-to-aws-ecr
@@ -72,7 +74,7 @@ jobs:
           contect: .
           push: true
           tags: |
-            ${{steps.login-aws-ecr.outputs.registry}}/${{vars.ECR_REPOSITORY}}:${{steps.generate-hash-tag.outputs.sha}}
+            ${{steps.login-aws-ecr.outputs.registry}}/${{env.ECR_REPOSITORY}}:${{steps.generate-hash-tag.outputs.sha}}
 
     #   - name: Render task definition
     #     id: render-task-definition
@@ -80,7 +82,7 @@ jobs:
     #     with:
     #       task-definition: ${{env.ECS_TASK_DEFINITION}}
     #       container-name: ${{env.CONTAINER_NAME}}
-    #       image: ${{steps.login-aws-ecr.outputs.registry}}/${{vars.ECR_REPOSITORY}}:${{steps.generate-hash-tag.outputs.sha}}
+    #       image: ${{steps.login-aws-ecr.outputs.registry}}/${{env.ECR_REPOSITORY}}:${{steps.generate-hash-tag.outputs.sha}}
 
     #   - name: Deploy on amazon ECS
     #     id: deploy-amazon-ecs
