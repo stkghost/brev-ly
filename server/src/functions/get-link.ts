@@ -1,7 +1,7 @@
 import { db } from "@/infra/db";
 import { schema } from "@/infra/db/schemas";
 import { Either, makeLeft, makeRight } from "@/shared/either";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 
 export async function GetLink(
   alias: string,
@@ -13,11 +13,10 @@ export async function GetLink(
   if (!existing) {
     return makeLeft({ message: "Link not found" });
   }
-
   await db
     .update(schema.links)
     .set({
-      clicks: existing.clicks + 1,
+      clicks: sql`${schema.links.clicks} + 1`,
     })
     .where(eq(schema.links.alias, alias));
 

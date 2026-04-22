@@ -22,13 +22,14 @@ export async function exportLinks(): Promise<
   const cursor = pg.unsafe(sql, params as string[]).cursor(1);
 
   const csv = stringify({
-    delimiter: ",",
+    delimiter: ";",
     header: true,
+    bom: true,
     columns: [
       { key: "alias", header: "Alias" },
       { key: "original_url", header: "ID" },
       { key: "clicks", header: "Clicks" },
-      { key: "craeted_at", header: "Criado Em" },
+      { key: "created_at", header: "Criado Em" },
     ],
   });
 
@@ -39,8 +40,12 @@ export async function exportLinks(): Promise<
     new Transform({
       objectMode: true,
       transform(chunks: unknown[], encoding, callback) {
-        for (const chunk of chunks) {
-          this.push(chunk);
+        for (const chunk of chunks as any[]) {
+          const formatted = {
+            ...chunk,
+            created_at: new Date(chunk.created_at).toLocaleDateString("pt-BR"),
+          };
+          this.push(formatted);
         }
         callback();
       },

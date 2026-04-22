@@ -38,7 +38,7 @@ server.register(fastifyMultipart);
 server.register(fastifySwagger, {
   openapi: {
     info: {
-      title: "Brevfy",
+      title: "brevly",
       description: "API docs",
       version: "1.0.0",
     },
@@ -52,6 +52,7 @@ server.register(fastifySwaggerUi, {
 
 server.register(fastifyCors, {
   origin: "*",
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
 });
 
 //routes
